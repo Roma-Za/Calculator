@@ -39,9 +39,8 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                // Start the Signup activity
-              /*  Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);*/
+                Intent intent = new Intent(getApplicationContext(), RegistrationActivity.class);
+                startActivityForResult(intent, REQUEST_SIGNUP);
             }
         });
         _forgottenLink = (TextView)findViewById(R.id.link_forgotten);
