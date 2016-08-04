@@ -15,6 +15,7 @@ package com.example.roman.calculator;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
+    private static final int REQUEST_REC = 0;
     private EditText _loginText;
     private EditText _passwordText;
     private Button _loginButton;
@@ -47,7 +48,8 @@ public class LoginActivity extends AppCompatActivity {
         _forgottenLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(getApplicationContext(), RecoveryActivity.class);
+                startActivityForResult(intent, REQUEST_REC);
             }
         });
     }

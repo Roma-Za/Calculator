@@ -25,7 +25,8 @@
         </activity>
         <activity
             android:name=".RegistrationActivity"
-            android:theme="@style/AppThemeNoActionBar"></activity>
+            android:theme="@style/AppThemeNoActionBar" />
+        <activity android:name=".RecoveryActivity"></activity>
     </application>
 
 </manifest>
