@@ -19,7 +19,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText _passwordText;
     private Button _loginButton;
     private TextView _signupLink;
-
+    private TextView _forgottenLink;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +44,15 @@ public class LoginActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_SIGNUP);*/
             }
         });
+        _forgottenLink = (TextView)findViewById(R.id.link_forgotten);
+        _forgottenLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
+
 
     public void login() {
         Log.d(TAG, "Login");
@@ -90,12 +98,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        // disable going back to the MainActivity
-        moveTaskToBack(true);
-    }
-
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
         finish();
@@ -110,11 +112,11 @@ public class LoginActivity extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
 
-        String email = _loginText.getText().toString();
+        String login = _loginText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _loginText.setError("enter a valid email address");
+        if (login.isEmpty()) {
+            _loginText.setError("enter a valid login");
             valid = false;
         } else {
             _loginText.setError(null);
@@ -128,5 +130,14 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+    public void onFbLoginClick(View view) {
+    }
+
+    public void onGLoginClick(View view) {
+    }
+
+    public void onTwLoginClick(View view) {
     }
 }

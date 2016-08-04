@@ -34,7 +34,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:hint="Login" />
+                android:hint="Login"
+                android:drawableLeft="@drawable/ic_perm_identity_white_24dp"/>
         </android.support.design.widget.TextInputLayout>
 
         <!-- Password Label -->
@@ -47,7 +48,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:hint="Password"/>
+                android:hint="Password"
+                android:drawableLeft="@drawable/ic_lock_outline_white_24dp"/>
         </android.support.design.widget.TextInputLayout>
 
 
@@ -68,7 +70,6 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:padding="12dp"
-            android:background="#E81F65"
             android:text="SEND"/>
 
         <LinearLayout
@@ -81,7 +82,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:onClick="onFbLoginClick"
+                android:background="?android:attr/selectableItemBackground">
                 <ImageView
                     android:src="@drawable/fb"
                     android:layout_width="30dp"
@@ -101,7 +104,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:onClick="onGLoginClick"
+                android:background="?android:attr/selectableItemBackground">
                 <ImageView
                     android:src="@drawable/google"
                     android:layout_width="30dp"
@@ -121,7 +126,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:onClick="onTwLoginClick"
+                android:background="?android:attr/selectableItemBackground">
                 <ImageView
                     android:src="@drawable/twitter"
                     android:layout_width="30dp"
