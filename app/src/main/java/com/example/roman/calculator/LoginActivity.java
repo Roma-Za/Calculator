@@ -12,6 +12,19 @@ package com.example.roman.calculator;
         import android.widget.TextView;
         import android.widget.Toast;
 
+        import com.facebook.CallbackManager;
+        import com.facebook.FacebookCallback;
+        import com.facebook.FacebookException;
+        import com.facebook.FacebookSdk;
+        import com.facebook.GraphRequest;
+        import com.facebook.GraphResponse;
+        import com.facebook.login.LoginManager;
+        import com.facebook.login.LoginResult;
+
+        import org.json.JSONObject;
+
+        import java.util.Arrays;
+
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
@@ -21,10 +34,50 @@ public class LoginActivity extends AppCompatActivity {
     private Button _loginButton;
     private TextView _signupLink;
     private TextView _forgottenLink;
+    private CallbackManager callbackManager;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
+
+        LoginManager.getInstance().registerCallback(callbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        Log.d("Success", "Login");
+
+                        GraphRequest request = GraphRequest.newMeRequest(
+                                loginResult.getAccessToken(),
+                                new GraphRequest.GraphJSONObjectCallback() {
+                                    @Override
+                                    public void onCompleted(
+                                            JSONObject object,
+                                            GraphResponse response) {
+                                        Toast.makeText(LoginActivity.this, response.getRawResponse(), Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                        Bundle parameters = new Bundle();
+                        parameters.putString("fields", "id,first_name,last_name,email");
+                        request.setParameters(parameters);
+                        request.executeAsync();
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Toast.makeText(LoginActivity.this, "Login Cancel", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        Toast.makeText(LoginActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
         setContentView(R.layout.activity_login);
+
         _loginText = (EditText)findViewById(R.id.input_login);
         _passwordText = (EditText)findViewById(R.id.input_password);
         _loginButton = (Button)findViewById(R.id.btn_login);
@@ -52,7 +105,9 @@ public class LoginActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_REC);
             }
         });
-    }
+
+
+}
 
 
     public void login() {
@@ -89,6 +144,8 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        callbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
 
@@ -133,12 +190,14 @@ public class LoginActivity extends AppCompatActivity {
         return valid;
     }
 
-    public void onFbLoginClick(View view) {
-    }
 
     public void onGLoginClick(View view) {
     }
 
     public void onTwLoginClick(View view) {
+    }
+
+    public void onFbLoginClick(View view) {
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email"));
     }
 }
