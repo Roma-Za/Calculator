@@ -56,6 +56,9 @@ public class LoginActivity extends AppCompatActivity {
                                             JSONObject object,
                                             GraphResponse response) {
                                         Toast.makeText(LoginActivity.this, response.getRawResponse(), Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(getApplicationContext(), TabActivity.class);
+                                        startActivityForResult(intent, REQUEST_SIGNUP);
+
                                     }
                                 });
                         Bundle parameters = new Bundle();
