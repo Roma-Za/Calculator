@@ -1,5 +1,6 @@
 package com.example.roman.calculator;
 
+        import android.app.Activity;
         import android.app.ProgressDialog;
         import android.os.Bundle;
         import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ package com.example.roman.calculator;
         import android.widget.TextView;
         import android.widget.Toast;
 
+        import com.example.roman.calculator.models.User;
         import com.facebook.CallbackManager;
         import com.facebook.FacebookCallback;
         import com.facebook.FacebookException;
@@ -21,6 +23,7 @@ package com.example.roman.calculator;
         import com.facebook.login.LoginManager;
         import com.facebook.login.LoginResult;
 
+        import org.json.JSONException;
         import org.json.JSONObject;
 
         import java.util.Arrays;
@@ -35,13 +38,15 @@ public class LoginActivity extends AppCompatActivity {
     private TextView _signupLink;
     private TextView _forgottenLink;
     private CallbackManager callbackManager;
+    private Activity _activity;
+    private User currentUser;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
-
+        _activity = this;
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
                     @Override
@@ -55,9 +60,32 @@ public class LoginActivity extends AppCompatActivity {
                                     public void onCompleted(
                                             JSONObject object,
                                             GraphResponse response) {
-                                        Toast.makeText(LoginActivity.this, response.getRawResponse(), Toast.LENGTH_LONG).show();
+
+                                        currentUser = new User();
+                                        try {
+                                            currentUser.setEmail(object.getString("email"));
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        try {
+                                            currentUser.setFb_id(object.getString("id"));
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        try {
+                                            currentUser.setFirst_name(object.getString("first_name"));
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        try {
+                                            currentUser.setLast_name(object.getString("last_name"));
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        Toast.makeText(LoginActivity.this,"Hello, "+currentUser.getFirst_name()+ " "+ currentUser.getLast_name(), Toast.LENGTH_LONG).show();
                                         Intent intent = new Intent(getApplicationContext(), TabActivity.class);
                                         startActivityForResult(intent, REQUEST_SIGNUP);
+                                        _activity.finish();
 
                                     }
                                 });
@@ -131,19 +159,22 @@ public class LoginActivity extends AppCompatActivity {
         String login = _loginText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        // TODO: Implement your own authentication logic here.
+        if (login.equals("admin")&&password.equals("admin")) {
+            currentUser = new User();
+            currentUser.setFirst_name("admin");
+            currentUser.setLast_name("admin");
+            new android.os.Handler().postDelayed(
+                    new Runnable() {
+                        public void run() {
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onLoginSuccess or onLoginFailed
-                        onLoginSuccess();
-                        // onLoginFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
+                            // On complete call either onLoginSuccess or onLoginFailed
+                            onLoginSuccess();
+                            // onLoginFailed();
+                            progressDialog.dismiss();
+                        }
+                    }, 3000);
+        }
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -161,6 +192,9 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
+        Toast.makeText(LoginActivity.this, "Hello, " + currentUser.getFirst_name() + " " + currentUser.getLast_name(), Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(getApplicationContext(), TabActivity.class);
+        startActivityForResult(intent, REQUEST_SIGNUP);
         finish();
     }
 

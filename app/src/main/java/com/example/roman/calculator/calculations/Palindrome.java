@@ -1,4 +1,4 @@
-package com.example.roman.calculator;
+package com.example.roman.calculator.calculations;
 
 public class Palindrome {
 

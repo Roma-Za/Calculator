@@ -8,16 +8,13 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import com.example.roman.calculator.fragments.FactorialFragment;
+import com.example.roman.calculator.fragments.PairsFragment;
+import com.example.roman.calculator.fragments.PalindromeFragment;
+
 
 public class TabActivity extends AppCompatActivity implements ActionBar.TabListener {
 
@@ -116,77 +113,6 @@ public class TabActivity extends AppCompatActivity implements ActionBar.TabListe
 
     }
 
-    public void onClickBtnTab(View view) {
-        Palindrome palindrome = new Palindrome();
-        TextView tvResult = (TextView) findViewById(R.id.tab_result);
-        EditText editText = (EditText) findViewById(R.id.tab_input);
-        String strNumber = editText.getText().toString();
-        if(strNumber.isEmpty()){
-        int p = palindrome.getMaxPalindrome();
-        tvResult.setText("Max palindrome: " + p);
-        }else{
-            int number =0;
-            try {
-                number = Integer.parseInt(strNumber);
-            } catch (NumberFormatException e) {
-                Log.e("Error", e.getMessage());
-            }
-
-            if(palindrome.isPalindrome(number)){
-                tvResult.setText("Palindrome");
-            }else{
-                tvResult.setText("Not palindrome");
-            }
-
-        }
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_tab_palindrome, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.tab_info);
-
-            switch (getArguments().getInt(ARG_SECTION_NUMBER)){
-                case 1: textView.setText(R.string.palendrome_info);
-                    break;
-                case 2: textView.setText(R.string.factorial_info);
-                    break;
-                case 3: textView.setText(R.string.pairs_info);
-                    break;
-                default: textView.setText("oy");
-                    break;
-            }
-            //textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
-    }
-
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -199,9 +125,16 @@ public class TabActivity extends AppCompatActivity implements ActionBar.TabListe
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            switch (position) {
+                case 0:
+                    return PalindromeFragment.newInstance();
+                case 1:
+                    return FactorialFragment.newInstance();
+                case 2:
+                    return PairsFragment.newInstance();
+                default:
+                    return null;
+            }
         }
 
         @Override
