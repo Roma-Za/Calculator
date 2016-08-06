@@ -50,17 +50,14 @@ public class RegistrationActivity extends Activity {
 
         final ProgressDialog progressDialog = new ProgressDialog(RegistrationActivity.this);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
+        progressDialog.setMessage("Registering...");
         progressDialog.show();
-
-        // TODO: Implement your own authentication logic here.
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
-                        // On complete call either onLoginSuccess or onLoginFailed
+
                         onRegSuccess();
-                        // onRegFailed();
                         progressDialog.dismiss();
                     }
                 }, 3000);
@@ -68,6 +65,8 @@ public class RegistrationActivity extends Activity {
 
     public void onRegSuccess() {
         _regButton.setEnabled(true);
+        Toast.makeText(this, "Hello, " + _fNameText.getText() + " " + _lNameText.getText(), Toast.LENGTH_LONG).show();
+        setResult(RESULT_OK);
         finish();
     }
 

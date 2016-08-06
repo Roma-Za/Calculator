@@ -46,8 +46,12 @@ public class FactorialFragment extends Fragment {
                     } catch (NumberFormatException e) {
                         Log.e("Error", e.getMessage());
                     }
+                    try {
+                        tvResult.setText("sum = " + factorial.getSumOfFactorial(number));
+                    }catch (Exception e){
+                        tvResult.setText("Enter a number less than.");
+                    }
 
-                    tvResult.setText("sum = " + factorial.getSumOfFactorial(number));
                 }
             }
         });

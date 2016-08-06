@@ -16,13 +16,10 @@
     <string name="fill_reg_form">Please fill in the registration form</string>
     <string name="recoverry">Please, enter your email to recover your password</string>
     <string name="facebook_app_id">1035011036532302</string>
-    <string name="title_activity_tab">TabActivity</string>
+    <string name="title_activity_tab">Calculate</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="palindrome_info">The largest palindrome formed by the product of two three-digit numbers.</string>
     <string name="factorial_info">The sum of the digits in the number.</string>
     <string name="pairs_info">Enter the pairs(Example:12 34 45 32 12 45 32 4)</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
