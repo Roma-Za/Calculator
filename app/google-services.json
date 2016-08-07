@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "517982107953",
+    "project_id": "calculator-c65a4"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:517982107953:android:eea0d04d7c406ce8",
+        "android_client_info": {
+          "package_name": "com.example.roman.calculator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "517982107953-j6a0and8bbdst2n75qggj96t0usjqjls.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.roman.calculator",
+            "certificate_hash": "923A7B28CAF7FD05FD27B8D837071D0CD4A06001"
+          }
+        },
+        {
+          "client_id": "517982107953-9r2m7n50vg2eh3142ukt3sv391ulgnv9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.roman.calculator",
+            "certificate_hash": "25983B435C7FD5D849471337212FFDD602F81606"
+          }
+        },
+        {
+          "client_id": "517982107953-4e5h663n1ru5vj5td05titphk6m78395.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRh6w4WmpJva4SwQlf-Qf6gWFVr3vL3j4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
