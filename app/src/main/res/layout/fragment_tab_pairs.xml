@@ -7,6 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:textColor="@color/cardview_shadow_end_color"
     tools:context=".fragments.PairsFragment">
 
     <TextView
@@ -14,6 +15,7 @@
         android:text="@string/pairs_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#1F1F1F"
         android:textSize="16dp"/>
 
     <EditText
@@ -21,14 +23,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:textColor="#1F1F1F"
         android:inputType="none" />
 
     <Button
         android:id="@+id/btn_calculate_pairs"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="24dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_gravity="center"
+        android:textColor="#1F1F1F"
         android:padding="12dp"
         android:textSize="20dp"
         android:text="CALCULATE"/>
@@ -40,6 +47,7 @@
         android:textSize="16dp"
         android:textAlignment="center"
         android:layout_margin="10dp"
+        android:textColor="#1F1F1F"
         android:gravity="center"/>
 
 

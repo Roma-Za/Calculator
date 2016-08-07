@@ -5,8 +5,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowBackground">@color/colorPrimary</item>
-        <item name="colorButtonNormal">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/colorGrey</item>
+        <item name="colorButtonNormal">@color/colorDarkGrey</item>
     </style>
 
     <style name="AppThemeNoActionBar" parent="Theme.AppCompat.NoActionBar">
