@@ -3,8 +3,6 @@ package com.example.roman.calculator;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -26,12 +24,8 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.Scopes;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Scope;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,9 +33,7 @@ import org.json.JSONObject;
 import java.util.Arrays;
 
 public class LoginActivity extends AppCompatActivity {
-    private static final String TAG = "LoginActivity";
-    private static final int REQUEST_SIGNUP = 0;
-    private static final int RC_SIGN_IN = 1;
+
     private EditText _loginText;
     private EditText _passwordText;
     private Button _loginButton;
@@ -50,9 +42,6 @@ public class LoginActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
     private User currentUser;
     private SharedPreferences sPref;
-
-    final String LOGIN_TYPE = "login_type";
-    private GoogleApiClient mGoogleApiClient;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -136,7 +125,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), RegistrationActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
+                startActivityForResult(intent, Consts.REQUEST_SIGNUP);
             }
         });
         _forgottenLink = (TextView) findViewById(R.id.link_forgotten);
@@ -153,7 +142,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login() {
-        Log.d(TAG, "Login");
+        Log.d(Consts.TAG, "Login");
 
         if (!validate()) {
             onLoginFailed();
@@ -193,21 +182,21 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         callbackManager.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_SIGNUP) {
+        if (requestCode == Consts.REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
                 saveLoginType("standard");
                 startMainActivity();
             }
         }
 
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == Consts.RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
         }
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
-        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
+        Log.d(Consts.TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
@@ -265,24 +254,9 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public void onGLoginClick(View view) {
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestScopes(new Scope(Scopes.PLUS_ME))
-                .requestEmail()
-                .build();
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        new AlertDialog.Builder(LoginActivity.this)
-                                .setTitle("Connection Failed")
-                                .setMessage("Unable to sign in with Google account")
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .show();
-                    }
-                })
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(GoogleAPIClientHelper.getClient(this));
+        startActivityForResult(signInIntent, Consts.RC_SIGN_IN);
     }
 
     public void onTwLoginClick(View view) {
@@ -293,15 +267,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void saveLoginType(String type) {
-        sPref = getPreferences(MODE_PRIVATE);
+        sPref = getApplicationContext().getSharedPreferences(Consts.PREFERENCE_FILE, MODE_PRIVATE);
         SharedPreferences.Editor ed = sPref.edit();
-        ed.putString(LOGIN_TYPE, type);
+        ed.putString(Consts.LOGIN_TYPE, type);
         ed.commit();
     }
 
     private String loadLoginType() {
-        sPref = getPreferences(MODE_PRIVATE);
-        String savedText = sPref.getString(LOGIN_TYPE, "");
+        sPref = getApplicationContext().getSharedPreferences(Consts.PREFERENCE_FILE, MODE_PRIVATE);
+        String savedText = sPref.getString(Consts.LOGIN_TYPE, "");
         return savedText;
     }
 }

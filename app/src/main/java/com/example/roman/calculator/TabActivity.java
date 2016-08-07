@@ -36,8 +36,6 @@ public class TabActivity extends AppCompatActivity implements ActionBar.TabListe
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private SharedPreferences sPref;
-    private GoogleApiClient mGoogleApiClient;
-    final String LOGIN_TYPE = "login_type";
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -99,26 +97,39 @@ public class TabActivity extends AppCompatActivity implements ActionBar.TabListe
 
         if (id == R.id.action_logout) {
             String typeLogIn = loadLoginType();
-            switch (typeLogIn){
-                case "Facebook":
+            switch (typeLogIn) {
+                case Consts.FACEBOOK:
                     LoginManager.getInstance().logOut();
                     Toast.makeText(this, "Logout", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(intent);
                     this.finish();
                     break;
-                case "Google":
-                    mGoogleApiClient = new GoogleApiClient.Builder(this).build();
-                    Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                            new ResultCallback<Status>() {
-                                @Override
-                                public void onResult(Status status) {
-                                    Toast.makeText(TabActivity.this, "Logout status: " + status.toString(), Toast.LENGTH_LONG).show();
-                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                    startActivity(intent);
-                                    TabActivity.this.finish();
-                                }
-                            });
+                case Consts.GOOGLE:
+                    final GoogleApiClient client = GoogleAPIClientHelper.getClient(this);
+                    client.registerConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                        @Override
+                        public void onConnected(Bundle bundle) {
+                            Auth.GoogleSignInApi.signOut(client).setResultCallback(
+                                    new ResultCallback<Status>() {
+                                        @Override
+                                        public void onResult(Status status) {
+                                            //Toast.makeText(TabActivity.this, "Logout status: " + status.toString(), Toast.LENGTH_LONG).show();
+                                            Toast.makeText(TabActivity.this, "Logout", Toast.LENGTH_LONG).show();
+                                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                            startActivity(intent);
+                                            TabActivity.this.finish();
+                                        }
+                                    });
+                        }
+
+                        @Override
+                        public void onConnectionSuspended(int i) {
+
+                        }
+                    });
+                    client.connect();
+
                     break;
             }
 
@@ -187,9 +198,10 @@ public class TabActivity extends AppCompatActivity implements ActionBar.TabListe
         }
 
     }
+
     private String loadLoginType() {
-        sPref = getPreferences(MODE_PRIVATE);
-        String savedText = sPref.getString(LOGIN_TYPE, "");
+        sPref = getApplicationContext().getSharedPreferences(Consts.PREFERENCE_FILE, MODE_PRIVATE);
+        String savedText = sPref.getString(Consts.LOGIN_TYPE, "");
         return savedText;
     }
 }
