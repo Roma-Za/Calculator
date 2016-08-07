@@ -1,12 +1,11 @@
 package com.example.roman.calculator;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-
-import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,14 +24,26 @@ import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
 
+import io.fabric.sdk.android.Fabric;
+
 public class LoginActivity extends AppCompatActivity {
+
+    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
+    private static final String TWITTER_KEY = "Z63VC4AC9gWPXLXqTNXnwQIq7";
+    private static final String TWITTER_SECRET = "JH8lAxJeUU156ZJhk0sJwM3zwMSMYKZxMhC5L9ezoNEyUfPeYL";
+
 
     private EditText _loginText;
     private EditText _passwordText;
@@ -42,11 +53,15 @@ public class LoginActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
     private User currentUser;
     private SharedPreferences sPref;
+    private TwitterAuthClient mTwitterAuthClient;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        Fabric.with(this, new Twitter(authConfig));
         FacebookSdk.sdkInitialize(getApplicationContext());
+        mTwitterAuthClient = new TwitterAuthClient();
         callbackManager = CallbackManager.Factory.create();
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
@@ -84,7 +99,7 @@ public class LoginActivity extends AppCompatActivity {
                                             e.printStackTrace();
                                         }
                                         Toast.makeText(LoginActivity.this, "Hello, " + currentUser.getFirst_name() + " " + currentUser.getLast_name(), Toast.LENGTH_LONG).show();
-                                        saveLoginType("Facebook");
+                                        saveLoginType(Consts.FACEBOOK);
                                         startMainActivity();
 
                                     }
@@ -167,7 +182,7 @@ public class LoginActivity extends AppCompatActivity {
                 new Runnable() {
                     public void run() {
                         if (login.equals("admin") && password.equals("admin")) {
-                            saveLoginType("standard");
+                            saveLoginType(Consts.STANDART);
                             onLoginSuccess();
                         }else {
                             onLoginFailed();
@@ -180,11 +195,11 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        mTwitterAuthClient.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Consts.REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
-                saveLoginType("standard");
+                saveLoginType(Consts.STANDART);
                 startMainActivity();
             }
         }
@@ -200,7 +215,7 @@ public class LoginActivity extends AppCompatActivity {
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            saveLoginType("Google");
+            saveLoginType(Consts.GOOGLE);
             currentUser = new User();
             currentUser.setEmail(acct.getEmail());
             currentUser.setFirst_name(acct.getDisplayName());
@@ -260,6 +275,23 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onTwLoginClick(View view) {
+        mTwitterAuthClient.authorize(this, new com.twitter.sdk.android.core.Callback<TwitterSession>() {
+
+            @Override
+            public void success(Result<TwitterSession> twitterSessionResult) {
+                saveLoginType(Consts.TWITTER);
+               /* currentUser = new User();
+                currentUser.setEmail(twitterSessionResult.);
+                currentUser.setFirst_name(acct.getDisplayName());*/
+                Toast.makeText(LoginActivity.this, "Hello, " + twitterSessionResult.data.getUserName(), Toast.LENGTH_LONG).show();
+                startMainActivity();
+            }
+
+            @Override
+            public void failure(TwitterException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void onFbLoginClick(View view) {

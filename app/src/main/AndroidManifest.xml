@@ -41,6 +41,9 @@
         <activity
             android:name=".TabActivity"
             android:label="@string/title_activity_tab"></activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="26e22779901ca7b2daf751447704d2d80e2dec30" />
     </application>
 
 </manifest>
