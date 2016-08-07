@@ -3,6 +3,8 @@ package com.example.roman.calculator;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -22,6 +24,14 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,6 +41,7 @@ import java.util.Arrays;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
+    private static final int RC_SIGN_IN = 1;
     private EditText _loginText;
     private EditText _passwordText;
     private Button _loginButton;
@@ -41,6 +52,8 @@ public class LoginActivity extends AppCompatActivity {
     private SharedPreferences sPref;
 
     final String LOGIN_TYPE = "login_type";
+    private GoogleApiClient mGoogleApiClient;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,6 +148,8 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+
+
     }
 
     public void login() {
@@ -184,6 +199,27 @@ public class LoginActivity extends AppCompatActivity {
                 startMainActivity();
             }
         }
+
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+        }
+    }
+
+    private void handleSignInResult(GoogleSignInResult result) {
+        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
+        if (result.isSuccess()) {
+            // Signed in successfully, show authenticated UI.
+            GoogleSignInAccount acct = result.getSignInAccount();
+            saveLoginType("Google");
+            currentUser = new User();
+            currentUser.setEmail(acct.getEmail());
+            currentUser.setFirst_name(acct.getDisplayName());
+            Toast.makeText(LoginActivity.this, "Hello, " + currentUser.getFirst_name(), Toast.LENGTH_LONG).show();
+            startMainActivity();
+        } else {
+
+        }
     }
 
     private void startMainActivity() {
@@ -229,6 +265,24 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public void onGLoginClick(View view) {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestScopes(new Scope(Scopes.PLUS_ME))
+                .requestEmail()
+                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                        new AlertDialog.Builder(LoginActivity.this)
+                                .setTitle("Connection Failed")
+                                .setMessage("Unable to sign in with Google account")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .show();
+                    }
+                })
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     public void onTwLoginClick(View view) {

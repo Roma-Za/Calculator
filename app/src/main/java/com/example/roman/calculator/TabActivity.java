@@ -3,6 +3,8 @@ package com.example.roman.calculator;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
@@ -15,6 +17,11 @@ import android.widget.Toast;
 import com.example.roman.calculator.fragments.FactorialFragment;
 import com.example.roman.calculator.fragments.PairsFragment;
 import com.example.roman.calculator.fragments.PalindromeFragment;
+import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 
 
 public class TabActivity extends AppCompatActivity implements ActionBar.TabListener {
@@ -28,6 +35,9 @@ public class TabActivity extends AppCompatActivity implements ActionBar.TabListe
      * {@link android.support.v13.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private SharedPreferences sPref;
+    private GoogleApiClient mGoogleApiClient;
+    final String LOGIN_TYPE = "login_type";
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -88,7 +98,30 @@ public class TabActivity extends AppCompatActivity implements ActionBar.TabListe
         int id = item.getItemId();
 
         if (id == R.id.action_logout) {
-            Toast.makeText(this, "Logout", Toast.LENGTH_LONG).show();
+            String typeLogIn = loadLoginType();
+            switch (typeLogIn){
+                case "Facebook":
+                    LoginManager.getInstance().logOut();
+                    Toast.makeText(this, "Logout", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(intent);
+                    this.finish();
+                    break;
+                case "Google":
+                    mGoogleApiClient = new GoogleApiClient.Builder(this).build();
+                    Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                            new ResultCallback<Status>() {
+                                @Override
+                                public void onResult(Status status) {
+                                    Toast.makeText(TabActivity.this, "Logout status: " + status.toString(), Toast.LENGTH_LONG).show();
+                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                    startActivity(intent);
+                                    TabActivity.this.finish();
+                                }
+                            });
+                    break;
+            }
+
             return true;
         }
 
@@ -152,5 +185,11 @@ public class TabActivity extends AppCompatActivity implements ActionBar.TabListe
             }
             return null;
         }
+
+    }
+    private String loadLoginType() {
+        sPref = getPreferences(MODE_PRIVATE);
+        String savedText = sPref.getString(LOGIN_TYPE, "");
+        return savedText;
     }
 }
