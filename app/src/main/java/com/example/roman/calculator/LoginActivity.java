@@ -280,9 +280,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void success(Result<TwitterSession> twitterSessionResult) {
                 saveLoginType(Consts.TWITTER);
-               /* currentUser = new User();
-                currentUser.setEmail(twitterSessionResult.);
-                currentUser.setFirst_name(acct.getDisplayName());*/
                 Toast.makeText(LoginActivity.this, "Hello, " + twitterSessionResult.data.getUserName(), Toast.LENGTH_LONG).show();
                 startMainActivity();
             }
